@@ -4,6 +4,7 @@
         ".ruff_cache": true,
         "**/__pycache__": true
     },
+    "python.languageServer": "Pylance",
     "python.analysis.typeCheckingMode": "basic", // Pylance type checking
     "python.analysis.diagnosticSeverityOverrides": {
         "reportMissingModuleSource": "none"

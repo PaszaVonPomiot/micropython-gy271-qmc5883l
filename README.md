@@ -1,5 +1,7 @@
 # Micropython wrapper for GY-271 (QMC5883L) compass
-Micropython wrapper for GY-271 (QMC5883L) compass magnetometer for Raspberry Pi Pico 
+
+Micropython wrapper for GY-271 (QMC5883L) compass magnetometer for Raspberry Pi Pico.
+Based on https://github.com/jposada202020/MicroPython_QMC5883L
 
 ## Hardware
 
