@@ -1,0 +1,7 @@
+# NEVER EDIT THIS FILE MANUALLY
+_commit: '9537264'
+_src_path: https://github.com/PaszaVonPomiot/copier-micropython-pico.git
+project_description: Micropython wrapper for GY-271 (QMC5883L) compass magnetometer
+    for Raspberry Pi Pico
+project_name: micropython-gy271-qmc5883l
+project_title: Micropython wrapper for GY-271 (QMC5883L) compass

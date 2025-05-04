@@ -1,0 +1,16 @@
+[project]
+name = "micropython-gy271-qmc5883l"
+version = "0.1.0"
+description = "Micropython wrapper for GY-271 (QMC5883L) compass magnetometer for Raspberry Pi Pico"
+readme = "README.md"
+requires-python = ">=3.13"  # for type annotations only
+dependencies = [
+    "micropython-rp2-stubs",
+]
+
+[tool.ruff]
+lint.ignore = ["F401"]  # Ignore unused imports
+
+[tool.mypy]
+ignore_missing_imports = true
+follow_imports = "silent"

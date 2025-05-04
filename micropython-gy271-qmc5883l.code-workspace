@@ -1,0 +1,13 @@
+{
+    "folders": [
+        {
+            "name": "micropython-gy271-qmc5883l",
+            "path": "."
+        },
+        {
+            "name": "Pico",
+            "uri": "pico:/"
+        }
+    ],
+    "settings": {}
+}
