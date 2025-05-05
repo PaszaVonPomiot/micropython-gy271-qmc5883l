@@ -2,7 +2,7 @@
 
 Micropython wrapper for 3-Axis Magnetic Sensor QMC5883L chip found on GY-271 breakout boards for use with Raspberry Pi Pico.
 
-![GY-271 board](docs/img/gy-271_a.jpg)
+<!-- ![GY-271 board](docs/img/gy-271_a.jpg) -->
 
 ## Hardware requirements
 
