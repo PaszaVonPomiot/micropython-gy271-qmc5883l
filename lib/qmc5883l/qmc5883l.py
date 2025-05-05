@@ -1,57 +1,10 @@
-#
-# initial code by Sebastian Folz, M.Sc. at
-# http://nobytes.blogspot.com/2018/03/qmc5883-magnetic-field-sensor.html
-# which, I assume, was itself ported from C-Code
-# See also https://github.com/RigacciOrg/py-qmc5883l
-#
-# Changes and Additions:
-# - port to micropython's I2C methods
-# - add method read_scaled() for scaled values
-# - reading register values into a static buffer
-# - parsed register values in one single struct call
-# - fixed a bug in the method set_rate()
-# - added value checks for the set_xxx methods()
-# - changed method names according to PEP8
-# - apply PyLint and fixed bugs & warnings reported by it
-#
-
 import time
 import struct
 from micropython import const
 
 
-class mag_base:
-    # Compass base class
-    def __init__(self, i2c):
-        self.i2c = i2c
-
-    def read_scaled(self):
-        return (0.0, 0.0, 0.0, 0.0)
-
-    def read_raw(self):
-        return (0, 0, 0)
-
-    def set_sampling_rate(self, rate):
-        pass
-
-    def set_range(self, val):
-        pass
-
-    def set_oversampling(self, val):
-        pass
-
-    def reset(self):
-        pass
-
-
-class QMC5883L(mag_base):
-    # probe the existence of const()
-    # try:
-    #     _canary = const(0xFEED)
-    # except:
-    #     const = lambda x: x
-
-    # Default I2C address
+class QMC5883L:
+    # Default I2C address of the QMC5883L
     ADDR = const(0x0D)
 
     # QMC5883 Register numbers
@@ -100,7 +53,7 @@ class QMC5883L(mag_base):
     CONFIG2_ROL_PTR = const(0b01000000)
     CONFIG2_SOFT_RST = const(0b10000000)
 
-    def __init__(self, i2c, offset=50.0):
+    def __init__(self, i2c, offset=50.0) -> None:
         self.i2c = i2c
         self.temp_offset = offset
         self.oversampling = QMC5883L.CONFIG_OS64
@@ -111,13 +64,13 @@ class QMC5883L(mag_base):
         self.command = bytearray(1)
         self.reset()
 
-    def reset(self):
+    def reset(self) -> None:
         self.command[0] = 1
         self.i2c.writeto_mem(QMC5883L.ADDR, QMC5883L.RESET, self.command)
         time.sleep(0.1)
         self.reconfig()
 
-    def reconfig(self):
+    def reconfig(self) -> None:
         self.command[0] = self.oversampling | self.range | self.rate | self.mode
         self.i2c.writeto_mem(QMC5883L.ADDR, QMC5883L.CONFIG, self.command)
         time.sleep(0.01)
@@ -125,7 +78,7 @@ class QMC5883L(mag_base):
         self.i2c.writeto_mem(QMC5883L.ADDR, QMC5883L.CONFIG2, self.command)
         time.sleep(0.01)
 
-    def set_oversampling(self, sampling):
+    def set_oversampling(self, sampling) -> None:
         if (sampling << 6) in (
             QMC5883L.CONFIG_OS512,
             QMC5883L.CONFIG_OS256,
@@ -137,14 +90,14 @@ class QMC5883L(mag_base):
         else:
             raise ValueError("Invalid parameter")
 
-    def set_range(self, rng):
-        if (rng << 4) in (QMC5883L.CONFIG_2GAUSS, QMC5883L.CONFIG_8GAUSS):
-            self.range = rng << 4
+    def set_range(self, range) -> None:
+        if (range << 4) in (QMC5883L.CONFIG_2GAUSS, QMC5883L.CONFIG_8GAUSS):
+            self.range = range << 4
             self.reconfig()
         else:
             raise ValueError("Invalid parameter")
 
-    def set_sampling_rate(self, rate):
+    def set_sampling_rate(self, rate) -> None:
         if (rate << 2) in (
             QMC5883L.CONFIG_10HZ,
             QMC5883L.CONFIG_50HZ,
@@ -167,7 +120,7 @@ class QMC5883L(mag_base):
 
         return status & QMC5883L.STATUS_DRDY
 
-    def read_raw(self):
+    def read_raw(self) -> tuple[int, int, int, int]:
         try:
             while not self.ready():
                 time.sleep(0.005)
@@ -180,7 +133,7 @@ class QMC5883L(mag_base):
 
         return (x, y, z, temp)
 
-    def read_scaled(self):
+    def read_scaled(self) -> tuple[float, float, float, float]:
         x, y, z, temp = self.read_raw()
         scale = 12000 if self.range == QMC5883L.CONFIG_2GAUSS else 3000
 
